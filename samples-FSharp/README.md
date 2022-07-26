@@ -1,5 +1,12 @@
 ﻿# FSharp samples
 
+Recommended order:
+
+- [Scatter.fsx](Scatter.fsx)
+- [Processes.fsx](Processes.fsx)
+- [ProcessesLive.fsx](ProcessesLive.fsx)
+- [PanelFilesLive.fsx](PanelFilesLive.fsx)
+
 ## Run in Far Manager
 
 In Far Manager with `FarNet.FSharpFar` and `FarNet.ScottPlot` installed, run scripts as:

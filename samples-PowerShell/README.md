@@ -1,5 +1,12 @@
 ﻿# PowerShell samples
 
+Recommended order:
+
+- [Scatter.far.ps1](Scatter.far.ps1)
+- [Processes.far.ps1](Processes.far.ps1)
+- [ProcessesLive.far.ps1](ProcessesLive.far.ps1)
+- [PanelFilesLive.far.ps1](PanelFilesLive.far.ps1)
+
 ## Run in Far Manager
 
 In Far Manager with `FarNet.PowerShellFar` and `FarNet.ScottPlot` installed, run scripts as:

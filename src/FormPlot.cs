@@ -1,75 +1,102 @@
 ﻿using ScottPlot;
-using System.Drawing;
+using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace FarNet.ScottPlot;
 
 /// <summary>
-/// This type derives from <see cref="Plot"/> and provides additional form members including the method <see cref="Show"/>.
+/// This type inherits <see cref="Plot"/>, adds new form related properties and the method <see cref="Show"/>.
 /// </summary>
 public class FormPlot : Plot
 {
+    readonly CancellationTokenSource _tokenSource = new();
+    FormsPlotViewer _form;
+
     /// <summary>
-    /// The form title.
+    /// Gets or sets the form title.
     /// </summary>
     public string FormTitle { get; set; }
 
     /// <summary>
-    /// Thell to wait for the form exit.
+    /// Gets the cancellation token for live plot tasks.
     /// </summary>
-    public bool FormWait { get; set; }
+    public CancellationToken CancellationToken { get; }
 
     /// <summary>
-    /// Shows this plot in a form.
+    /// Gets true if the form is cancelling.
+    /// </summary>
+    public bool IsCancellationRequested => CancellationToken.IsCancellationRequested;
+
+    /// <summary>
+    /// Creates a new plot for showing in a form.
+    /// </summary>
+    /// <param name="formTitle">Specifies the form window title.</param>
+    public FormPlot(string formTitle = null)
+    {
+        CancellationToken = _tokenSource.Token;
+        FormTitle = formTitle;
+    }
+
+    /// <summary>
+    /// Shows this plot in a form or renders the shown form after plot changes.
     /// </summary>
     public void Show()
     {
-        void worker()
+        if (_form is null)
         {
-            using var form = CreateForm();
-            form.ShowDialog();
+            var thread = new Thread(Start)
+            {
+                Name = "Plot thread.",
+                IsBackground = true
+            };
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
         }
-
-        var thread = new Thread(worker)
+        else
         {
-            Name = "Plot thread.",
-            IsBackground = true
-        };
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
+            if (CancellationToken.IsCancellationRequested)
+                return;
 
-        if (FormWait)
-            thread.Join();
+            try
+            {
+                _form.formsPlot1.Render();
+            }
+            catch (InvalidOperationException ex)
+            {
+                // E.g. "Object is currently in use elsewhere."
+                Trace.WriteLine($"ScottPlot error: {ex.Message}");
+            }
+        }
     }
 
-    Form CreateForm()
+    void Start()
     {
-        var form = new Form()
+        _form = new FormsPlotViewer(this, (int)Width, (int)Height, FormTitle ?? "Plot");
+
+        _form.Load += (s, e) =>
         {
-            Text = FormTitle ?? "Plot"
+            _form.Activate();
         };
 
-        var formsPlot = new FormsPlot
-        {
-            Dock = DockStyle.Fill
-        };
-
-        form.Controls.Add(formsPlot);
-        form.Size = new Size((int)Width, (int)Height);
-        formsPlot.Reset(this);
-
-        form.Load += (s, e) =>
-        {
-            form.Activate();
-        };
-
-        formsPlot.KeyDown += (s, e) =>
+        _form.formsPlot1.KeyDown += (s, e) =>
         {
             if (e.KeyCode == Keys.Escape)
-                form.Close();
+            {
+                _tokenSource.Cancel();
+                _form.Close();
+            }
         };
 
-        return form;
+        try
+        {
+            _form.ShowDialog();
+        }
+        finally
+        {
+            _tokenSource.Cancel();
+            _form.Dispose();
+        }
     }
 }
