@@ -20,7 +20,6 @@ Start-FarTask -Data N {
 			$values[$i] = $_.WorkingSet64 / 1mb
 			$labels[$i] = $_.Name.Substring(0, [Math]::Min($_.Name.Length, 25))
 		}
-		$plot.Show()
-		Start-Sleep 3
+		$plot.Show(3000)
 	}
 }

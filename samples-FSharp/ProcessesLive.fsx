@@ -6,7 +6,7 @@ task {
     let values = Array.zeroCreate N
     let labels = Array.zeroCreate N
 
-    let plot = FormPlot "Processes"
+    let plot = FormPlot("Processes")
     let set1 = plot.AddBar(values)
     plot.XTicks(labels)
     plot.XAxis.TickLabelStyle(rotation=60f)
@@ -20,7 +20,5 @@ task {
             values[i] <- float (x.WorkingSet64 / 1048576L)
             labels[i] <- x.ProcessName.Substring(0, min 25 x.ProcessName.Length)
         )
-
-        plot.Show()
-        do! Async.Sleep 3000
+        do! plot.ShowAsync(3000)
 }

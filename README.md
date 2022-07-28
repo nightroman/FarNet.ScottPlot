@@ -14,7 +14,7 @@ To install FarNet and FarNet.ScottPlot, follow [these steps](https://github.com/
 The NuGet package [FarNet.ScottPlot](https://www.nuget.org/packages/FarNet.ScottPlot)
 is installed to `%FARHOME%\FarNet\Lib\FarNet.ScottPlot`.
 
-## Sample scripts
+## Samples
 
 - [FSharp](samples-FSharp)
 - [JavaScript](samples-JavaScript)
@@ -23,17 +23,16 @@ is installed to `%FARHOME%\FarNet\Lib\FarNet.ScottPlot`.
 ## How to use
 
 Use `FarNet.ScottPlot.FormPlot` which inherits the original `ScottPlot.Plot`.
-`FormPlot` adds some properties and the method `Show()` which shows the plot.
+Setup the plot using the original members and call `Show()` to show the form.
 
-For live plots, simply update and show in a loop until the plot is cancelled.
-Check for `IsCancellationRequested` or use the `CancellationToken` directly.
+For live plots, update and show in a loop until the plot is cancelled.
+Check for `IsCancellationRequested` or use the `CancellationToken`.
+Use `ShowAsync(int)` or `Show(int)` for intervals between updates.
 
 Note that `Show()` shows the form and immediately returns. This is the desired
 behaviour for scripts in Far Manager or interactive `pwsh` and `fsx` consoles.
-
-Use `CancellationToken.WaitHandle.WaitOne()` in order to block after `Show()`
-on running scripts by non interactive `pwsh` or `fsx`, to avoid immediate
-exits, see samples.
+Use `Show(-1)` in order to block the current thread and avoid immediate console
+exits on running scripts by non-interactive `pwsh` or `fsx`, see samples.
 
 ## See also
 

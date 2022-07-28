@@ -6,7 +6,7 @@ task {
     let values = Array.zeroCreate N
     let labels = Array.zeroCreate N
 
-    let plot = FormPlot $"{N} lagest panel files"
+    let plot = FormPlot($"{N} lagest panel files")
     let set1 = plot.AddBar(values)
     plot.XTicks(labels)
     plot.XAxis.TickLabelStyle(rotation=60f)
@@ -24,6 +24,5 @@ task {
             labels[i] <- file.Name.Substring(0, min file.Name.Length 25)
 
         plot.SetAxisLimitsY(0, (values |> Array.max) * 1.05)
-        plot.Show()
-        do! Async.Sleep 3000
+        do! plot.ShowAsync(3000)
 }

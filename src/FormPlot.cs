@@ -2,22 +2,33 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FarNet.ScottPlot;
 
 /// <summary>
-/// This type inherits <see cref="Plot"/>, adds new form related properties and the method <see cref="Show"/>.
+/// This type extends <see cref="Plot"/> with members for showing the plot in a form.
 /// </summary>
 public class FormPlot : Plot
 {
     readonly CancellationTokenSource _tokenSource = new();
+    private string _formTitle;
     FormsPlotViewer _form;
 
     /// <summary>
     /// Gets or sets the form title.
     /// </summary>
-    public string FormTitle { get; set; }
+    public string FormTitle
+    {
+        get => _formTitle;
+        set
+        {
+            _formTitle = value;
+            if (_form is not null)
+                _form.Text = _formTitle;
+        }
+    }
 
     /// <summary>
     /// Gets the cancellation token for live plot tasks.
@@ -40,8 +51,35 @@ public class FormPlot : Plot
     }
 
     /// <summary>
+    /// Calls <see cref="Show()"/> and delays for the specified number of milliseconds.
+    /// </summary>
+    public Task ShowAsync(int millisecondsDelay)
+    {
+        Show();
+        return Task.Delay(millisecondsDelay, CancellationToken);
+    }
+
+    /// <summary>
+    /// Calls <see cref="Show()"/> and blocks the current thread for the specified number of milliseconds.
+    /// In async contexts consider using <see cref="ShowAsync"/> instead.
+    /// </summary>
+    /// <param name="millisecondsWait">The number of milliseconds to wait or -1 to wait indefinitely.</param>
+    public void Show(int millisecondsWait)
+    {
+        Show();
+
+        //! valid 0 case: `$plot.Show($(if ($Wait) {-1} else {0}))`
+        if (millisecondsWait != 0)
+            CancellationToken.WaitHandle.WaitOne(millisecondsWait);
+    }
+
+    /// <summary>
     /// Shows this plot in a form or renders the shown form after plot changes.
     /// </summary>
+    /// <remarks>
+    /// This method shows the form and returns immediately.
+    /// In order to block the current thread until the form is closed call <see cref="Show(int)"/> with -1.
+    /// </remarks>
     public void Show()
     {
         if (_form is null)
@@ -61,11 +99,13 @@ public class FormPlot : Plot
 
             try
             {
-                _form.formsPlot1.Render();
+                // Use `Invoke()` to avoid 'Cross-thread operation not valid: Control 'pictureBox1' accessed from a thread other than the thread it was created on.'
+                _form.formsPlot1.Invoke(() => _form.formsPlot1.Render());
             }
             catch (InvalidOperationException ex)
             {
-                // E.g. "Object is currently in use elsewhere."
+                // "Object is currently in use elsewhere." was seen and silenced before using above `Invoke()`.
+                // This `catch` might be not needed anymore. But keep it for now.
                 Trace.WriteLine($"ScottPlot error: {ex.Message}");
             }
         }

@@ -11,8 +11,4 @@ Add-Type -Path $env:FARHOME\FarNet\Lib\FarNet.ScottPlot\FarNet.ScottPlot.dll
 
 $plot = [FarNet.ScottPlot.FormPlot]::new('Scatter')
 $set1 = $plot.AddScatter($dataX, $dataY)
-$plot.Show()
-
-if ($Wait) {
-	$null = $plot.CancellationToken.WaitHandle.WaitOne()
-}
+$plot.Show($Wait ? -1 : 0)

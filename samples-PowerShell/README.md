@@ -15,15 +15,15 @@ In Far Manager with `FarNet.PowerShellFar` and `FarNet.ScottPlot` installed, run
 ps: .\Scatter.far.ps1
 ```
 
-## Run in PowerShell
+## Run by pwsh
 
-With `FarNet.ScottPlot` available somewhere locally, adjust this script line:
+With `pwsh` installed and `FarNet.ScottPlot` available locally, adjust this script line:
 
 ```
-Add-Type -Path <FarNet.ScottPlot path>\FarNet.ScottPlot.dll
+Add-Type -Path $env:FARHOME\FarNet\Lib\FarNet.ScottPlot\FarNet.ScottPlot.dll
 ```
 
-and run scripts by pwsh as:
+or ensure the environment variable `FARHOME` and path, and run scripts by pwsh as:
 
 ```
 pwsh Scatter.far.ps1 -Wait

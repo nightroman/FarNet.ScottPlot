@@ -106,7 +106,7 @@ https://github.com/nightroman/FarNet#readme
 		<license type="expression">MIT</license>
 		<summary>$text</summary>
 		<description>$text</description>
-		<releaseNotes>https://github.com/nightroman/$ModuleName/blob/master/Release-Notes.md</releaseNotes>
+		<releaseNotes>https://github.com/nightroman/$ModuleName/blob/main/Release-Notes.md</releaseNotes>
 		<tags>FarManager FarNet Chart Plot</tags>
 	</metadata>
 </package>
