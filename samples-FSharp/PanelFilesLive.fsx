@@ -1,7 +1,7 @@
 ﻿open FarNet
 open FarNet.ScottPlot
 
-task {
+async {
     let N = 10
     let values = Array.zeroCreate N
     let labels = Array.zeroCreate N
@@ -14,7 +14,7 @@ task {
 
     while not plot.IsCancellationRequested do
         let! files = job {
-            return far.Panel.ShownFiles |> Seq.sortByDescending (fun x -> x.Length) |> Seq.toArray
+            return far.Panel.GetFiles() |> Array.sortByDescending (fun x -> x.Length)
         }
         Array.fill values 0 N 0.
         Array.fill labels 0 N ""
@@ -24,5 +24,6 @@ task {
             labels[i] <- file.Name.Substring(0, min file.Name.Length 25)
 
         plot.SetAxisLimitsY(0, (values |> Array.max) * 1.05)
-        do! plot.ShowAsync(3000)
+        do! plot.ShowAsync(3000) |> Async.AwaitTask
 }
+|> Jobs.Start
