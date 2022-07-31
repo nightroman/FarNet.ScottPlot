@@ -1,7 +1,7 @@
 ﻿open FarNet.ScottPlot
 open System.Diagnostics
 
-async {
+task {
     let N = 20
     let values = Array.zeroCreate N
     let labels = Array.zeroCreate N
@@ -20,6 +20,5 @@ async {
             values[i] <- float (x.WorkingSet64 / 1048576L)
             labels[i] <- x.ProcessName.Substring(0, min 25 x.ProcessName.Length)
         )
-        do! plot.ShowAsync(3000) |> Async.AwaitTask
+        do! plot.ShowAsync(3000)
 }
-|> Async.Start
