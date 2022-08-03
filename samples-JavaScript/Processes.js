@@ -1,12 +1,9 @@
 ﻿import { toArray } from './Abc.js'
 
-const lib = host.lib(
-    clr.System.Environment.ExpandEnvironmentVariables('%FARHOME%/FarNet/Lib/FarNet.ScottPlot/FarNet.ScottPlot.dll'),
-    'System.Diagnostics.Process'
-)
+const lib = host.lib(clr.System.Environment.ExpandEnvironmentVariables('%FARHOME%/FarNet/Lib/FarNet.ScottPlot/FarNet.ScottPlot.dll'))
 
 const N = 20
-let processes = Array.from(lib.System.Diagnostics.Process.GetProcesses())
+let processes = Array.from(clr.System.Diagnostics.Process.GetProcesses())
     .sort((a, b) => a.WorkingSet64 < b.WorkingSet64 ? 1 : -1)
     .slice(0, N)
 

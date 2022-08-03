@@ -1,7 +1,4 @@
-﻿const lib = host.lib(
-    clr.System.Environment.ExpandEnvironmentVariables('%FARHOME%/FarNet/Lib/FarNet.ScottPlot/FarNet.ScottPlot.dll'),
-    'System.Diagnostics.Process'
-)
+﻿const lib = host.lib(clr.System.Environment.ExpandEnvironmentVariables('%FARHOME%/FarNet/Lib/FarNet.ScottPlot/FarNet.ScottPlot.dll'))
 
 const N = 20
 let values = host.newArr(System.Double, N)
@@ -14,7 +11,7 @@ plot.XAxis.TickLabelStyle(null, null, null, null, 60)
 plot.YLabel('WorkingSet64')
 
 while (!plot.IsCancellationRequested) {
-    Array.from(lib.System.Diagnostics.Process.GetProcesses())
+    Array.from(clr.System.Diagnostics.Process.GetProcesses())
         .sort((a, b) => a.WorkingSet64 < b.WorkingSet64 ? 1 : -1)
         .slice(0, N)
         .forEach((x, i) => {

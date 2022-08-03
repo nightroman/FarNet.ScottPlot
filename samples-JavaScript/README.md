@@ -5,6 +5,7 @@ Recommended order:
 - [Scatter.js](Scatter.js)
 - [Processes.js](Processes.js)
 - [ProcessesLive.js](ProcessesLive.js)
+- [ProcessesLiveTask.js](ProcessesLiveTask.js)
 
 ## Run in Far Manager
 
@@ -25,4 +26,10 @@ To avoid blocking, run it as task:
 
 ```
 js: @task: ProcessesLive.js
+```
+
+Or use the async version of the script:
+
+```
+js: @ ProcessesLiveTask.js
 ```
