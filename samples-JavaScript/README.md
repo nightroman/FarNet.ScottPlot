@@ -32,7 +32,7 @@ This works, the plot is live, but it blocks Far Manager.
 To avoid blocking, we may run it as task:
 
 ```
-js: @task: ProcessesLive1.js
+js: task: @ ProcessesLive1.js
 ```
 
 Far Manager is not blocked now. But we cannot run anything else in this
