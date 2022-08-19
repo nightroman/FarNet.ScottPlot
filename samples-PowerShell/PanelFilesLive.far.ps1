@@ -15,7 +15,7 @@ Start-FarTask -Data N {
 
 	while(!$plot.IsCancellationRequested) {
 		$files = job {
-			$Far.Panel.ShownFiles | Sort-Object Length -Descending
+			$Far.Panel.Files | Sort-Object Length -Descending
 		}
 		for($i = $N; --$i -ge 0) {
 			if ($i -lt $files.Count) {

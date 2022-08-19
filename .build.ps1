@@ -10,7 +10,7 @@ param(
 
 Set-StrictMode -Version 3
 $ModuleName = 'FarNet.ScottPlot'
-$ModuleHome = "$FarHome\FarNet\Lib\$ModuleName"
+$ModuleRoot = "$FarHome\FarNet\Lib\$ModuleName"
 $Description = 'FarNet friendly ScottPlot extension for PowerShell, F#, JavaScript.'
 
 task build meta, {
@@ -20,14 +20,14 @@ task build meta, {
 
 task publish {
 	Set-Location src
-	exec { dotnet publish -c $Configuration -o $ModuleHome --no-build }
+	exec { dotnet publish -c $Configuration -o $ModuleRoot --no-build }
 
-	Remove-Item "$ModuleHome\$ModuleName.deps.json"
-	Copy-Item "$ModuleName.ini" $ModuleHome
+	Remove-Item "$ModuleRoot\$ModuleName.deps.json"
+	Copy-Item "$ModuleName.ini" $ModuleRoot
 
 	$xml = [xml](Get-Content "$ModuleName.csproj")
 	$node = $xml.SelectSingleNode('Project/ItemGroup/PackageReference[@Include="ScottPlot"]')
-	Copy-Item "$HOME\.nuget\packages\ScottPlot\$($node.Version)\lib\net5.0\ScottPlot.xml" $ModuleHome
+	Copy-Item "$HOME\.nuget\packages\ScottPlot\$($node.Version)\lib\net6.0\ScottPlot.xml" $ModuleRoot
 }
 
 task clean {
@@ -69,7 +69,7 @@ task package markdown, {
 	remove z
 	$toModule = mkdir "z\tools\FarHome\FarNet\Lib\$ModuleName"
 
-	exec { robocopy $ModuleHome $toModule /s /xf *.pdb } (0..2)
+	exec { robocopy $ModuleRoot $toModule /s /xf *.pdb } (0..2)
 	equals 6 (Get-ChildItem $toModule -Recurse -File).Count
 
 	Copy-Item -Destination $toModule @(
@@ -79,10 +79,10 @@ task package markdown, {
 }
 
 task nuget package, version, {
-	($dllVersion = (Get-Item "$ModuleHome\$ModuleName.dll").VersionInfo.FileVersion.ToString())
+	($dllVersion = (Get-Item "$ModuleRoot\$ModuleName.dll").VersionInfo.FileVersion.ToString())
 	equals $dllVersion $Version
 
-	$text = @"
+	$Description = @"
 $Description
 
 ---
@@ -104,8 +104,7 @@ https://github.com/nightroman/FarNet#readme
 		<owners>Roman Kuzmin</owners>
 		<projectUrl>https://github.com/nightroman/$ModuleName</projectUrl>
 		<license type="expression">MIT</license>
-		<summary>$text</summary>
-		<description>$text</description>
+		<description>$Description</description>
 		<releaseNotes>https://github.com/nightroman/$ModuleName/blob/main/Release-Notes.md</releaseNotes>
 		<tags>FarManager FarNet Chart Plot</tags>
 	</metadata>
