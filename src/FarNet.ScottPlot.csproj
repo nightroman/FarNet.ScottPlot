@@ -11,7 +11,7 @@
     <Exec Command="ib publish -Configuration $(Configuration) -FarHome $(FarHome)" />
   </Target>
   <ItemGroup>
-    <PackageReference Include="ScottPlot" Version="4.1.57" />
-    <PackageReference Include="ScottPlot.WinForms" Version="4.1.57" />
+    <PackageReference Include="ScottPlot" Version="4.1.58" />
+    <PackageReference Include="ScottPlot.WinForms" Version="4.1.58" />
   </ItemGroup>
 </Project>

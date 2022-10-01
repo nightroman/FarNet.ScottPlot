@@ -22,7 +22,7 @@ task publish {
 	Set-Location src
 	exec { dotnet publish -c $Configuration -o $ModuleRoot --no-build }
 
-	Remove-Item "$ModuleRoot\$ModuleName.deps.json"
+	remove "$ModuleRoot\$ModuleName.*.json"
 	Copy-Item "$ModuleName.ini" $ModuleRoot
 
 	$xml = [xml](Get-Content "$ModuleName.csproj")
