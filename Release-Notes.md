@@ -1,5 +1,9 @@
 # FarNet.ScottPlot Release Notes
 
+## v1.0.1
+
+- ScottPlot 4.1.60
+
 ## v1.0.0
 
 - .NET 7
