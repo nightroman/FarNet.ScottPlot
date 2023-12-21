@@ -1,5 +1,10 @@
 # FarNet.ScottPlot Release Notes
 
+## v2.0.1
+
+- ScottPlot 4.1.69
+- New sample `Histogram.far.ps1`
+
 ## v2.0.0
 
 .NET 8

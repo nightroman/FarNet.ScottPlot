@@ -6,6 +6,7 @@ Recommended order:
 - [Processes.far.ps1](Processes.far.ps1)
 - [ProcessesLive.far.ps1](ProcessesLive.far.ps1)
 - [PanelFilesLive.far.ps1](PanelFilesLive.far.ps1)
+- [Histogram.far.ps1](Histogram.far.ps1)
 
 ## Run in Far Manager
 
