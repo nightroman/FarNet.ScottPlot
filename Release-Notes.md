@@ -1,5 +1,9 @@
 # FarNet.ScottPlot Release Notes
 
+## v2.0.2
+
+- ScottPlot 4.1.70
+
 ## v2.0.1
 
 - ScottPlot 4.1.69
