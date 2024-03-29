@@ -34,6 +34,10 @@ task clean {
 	remove src\bin, src\obj, README.htm, *.nupkg, z
 }
 
+task remove_module {
+	remove $ModuleRoot
+}
+
 task version {
 	($script:Version = switch -Regex -File Release-Notes.md {'##\s+v(\d+\.\d+\.\d+)' {$Matches[1]; break} })
 }
