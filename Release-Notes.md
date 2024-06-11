@@ -1,6 +1,10 @@
 # FarNet.ScottPlot Release Notes
 <https://github.com/ScottPlot/ScottPlot/releases>
 
+## v2.0.4
+
+- ScottPlot 4.1.74
+
 ## v2.0.3
 
 - ScottPlot 4.1.73
