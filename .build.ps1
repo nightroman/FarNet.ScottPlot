@@ -25,9 +25,14 @@ task publish {
 	remove "$ModuleRoot\$ModuleName.*.json"
 	Copy-Item "$ModuleName.ini" $ModuleRoot
 
+	Copy-Item $ModuleRoot\runtimes\win-x64\native\libSkiaSharp.dll $ModuleRoot
+
 	$xml = [xml](Get-Content "$ModuleName.csproj")
 	$node = $xml.SelectSingleNode('Project/ItemGroup/PackageReference[@Include="ScottPlot"]')
-	Copy-Item "$HOME\.nuget\packages\ScottPlot\$($node.Version)\lib\net6.0\ScottPlot.xml" $ModuleRoot
+	Copy-Item "$HOME\.nuget\packages\ScottPlot\$($node.Version)\lib\net8.0\ScottPlot.xml" $ModuleRoot
+
+	Set-Location "$ModuleRoot\runtimes"
+	remove linux-*, osx, win-arm64
 }
 
 task clean {
@@ -76,7 +81,6 @@ task package markdown, {
 	$toModule = mkdir "z\tools\FarHome\FarNet\Lib\$ModuleName"
 
 	exec { robocopy $ModuleRoot $toModule /s /xf *.pdb } (0..2)
-	equals 6 (Get-ChildItem $toModule -Recurse -File).Count
 
 	Copy-Item -Destination z @(
 		'README.md'
@@ -86,6 +90,31 @@ task package markdown, {
 		"README.htm"
 		"LICENSE"
 	)
+
+	$result = Get-ChildItem $toModule -Recurse -File -Name | Out-String
+	$sample = @'
+FarNet.ScottPlot.dll
+FarNet.ScottPlot.ini
+FarNet.ScottPlot.xml
+HarfBuzzSharp.dll
+libSkiaSharp.dll
+LICENSE
+OpenTK.dll
+OpenTK.GLControl.dll
+README.htm
+ScottPlot.dll
+ScottPlot.WinForms.dll
+ScottPlot.xml
+SkiaSharp.dll
+SkiaSharp.HarfBuzz.dll
+SkiaSharp.Views.Desktop.Common.dll
+SkiaSharp.Views.WindowsForms.dll
+runtimes\win-x64\native\libHarfBuzzSharp.dll
+runtimes\win-x64\native\libSkiaSharp.dll
+runtimes\win-x86\native\libHarfBuzzSharp.dll
+runtimes\win-x86\native\libSkiaSharp.dll
+'@
+	Assert-SameFile.ps1 -Text $sample $result $env:MERGE
 }
 
 task nuget package, version, {
@@ -111,6 +140,10 @@ task nuget package, version, {
 "@
 
 	exec { NuGet.exe pack z\Package.nuspec }
+}
+
+task test {
+	Invoke-Build ** test
 }
 
 task . build, clean

@@ -16,23 +16,24 @@ is installed to `%FARHOME%\FarNet\Lib\FarNet.ScottPlot`.
 
 ## Samples
 
-- [FSharp](samples-FSharp)
-- [JavaScript](samples-JavaScript)
-- [PowerShell](samples-PowerShell)
+- [FSharp](https://github.com/nightroman/FarNet.ScottPlot/tree/main/samples-FSharp)
+- [JavaScript](https://github.com/nightroman/FarNet.ScottPlot/tree/main/samples-JavaScript)
+- [PowerShell](https://github.com/nightroman/FarNet.ScottPlot/tree/main/samples-PowerShell)
 
 ## How to use
 
-Use `FarNet.ScottPlot.FormPlot` which inherits the original `ScottPlot.Plot`.
+Use the special `ScottPlot.FarPlot` which inherits and extends `ScottPlot.Plot`.
 Setup the plot using the original members and call `Show()` to show the form.
 
-For live plots, update and show in a loop until the plot is cancelled.
+For live plots, if possible, use timer with `FormInterval` and `FormUpdate`.
+Alternatively, update and show in a loop until the plot is cancelled.
 Check for `IsCancellationRequested` or use the `CancellationToken`.
 Use `ShowAsync(int)` or `Show(int)` for intervals between updates.
 
 Note that `Show()` shows the form and immediately returns. This is the desired
 behaviour for scripts in Far Manager or interactive `pwsh` and `fsx` consoles.
-Use `Show(-1)` in order to block the current thread and avoid immediate console
-exits on running scripts by non-interactive `pwsh` or `fsx`, see samples.
+Use `Show(-1)` in order to block the current thread and avoid console exits on
+running scripts by non-interactive `pwsh` or `fsx`, see samples.
 
 ## See also
 

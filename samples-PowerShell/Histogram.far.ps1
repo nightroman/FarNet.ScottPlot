@@ -1,29 +1,31 @@
-﻿param($N = 50)
+﻿param($N = 20)
 
 $ErrorActionPreference = 1
+Add-Type -Path "$env:FARHOME\FarNet\Lib\FarNet.ScottPlot\FarNet.ScottPlot.dll"
 
-Add-Type -Path @(
-	"$env:FARHOME\FarNet\Lib\FarNet.ScottPlot\FarNet.ScottPlot.dll"
-	"$env:FARHOME\FarNet\Lib\FarNet.ScottPlot\ScottPlot.dll"
-)
+$plot = [ScottPlot.FarPlot]::new('Process memory')
+$plot.XLabel('Memory')
+$plot.YLabel('Count')
+$plot.Axes.Right.Label.Text = 'Probability'
 
-$title = 'Process memory'
-[double[]] $values = (Get-Process).ForEach{$_.WS}
+[double[]] $values = (Get-Process).ForEach{$_.WorkingSet64}
 $stat = $values | Measure-Object -Minimum -Maximum
 $min = $stat.Minimum
 $max = $stat.Maximum
 
-$hist = [ScottPlot.Statistics.Histogram]::new($min, $max, $N)
-$hist.AddRange($values)
+$hist = [ScottPlot.Statistics.Histogram]::WithBinCount($N, $values)
 
-$plot = [FarNet.ScottPlot.FormPlot]::new($title)
-$set1 = $plot.AddBar($hist.Counts, $hist.Bins)
-$set1.BarWidth = ($max - $min) / $N
-$set2 = $plot.AddFunction($hist.GetProbabilityCurve($values), 'Green', 2, 'Dash')
-$set2.YAxisIndex = 1
-$null = $plot.YAxis.Label('Count')
-$null = $plot.YAxis2.Label('Probability')
-$plot.YAxis2.Ticks($true)
-$plot.SetAxisLimits($null, $null, 0.0, $null, 0, 0)
-$plot.SetAxisLimits($null, $null, 0.0, 1.1, 0, 1)
+$set1 = $plot.Add.Bars($hist.Bins, $hist.Counts)
+foreach($_ in $set1.Bars) {$_.Size = $hist.FirstBinSize * 0.8}
+
+$pd = [ScottPlot.Statistics.ProbabilityDensity]::new($values)
+[double[]]$xs = [ScottPlot.Generate]::RangeWithCount($min, $max, $N * 2);
+[double[]]$ys = $pd.GetYs($xs)
+
+$set2 = $plot.Add.ScatterLine($xs, $ys)
+$set2.Axes.YAxis = $plot.Axes.Right
+$set2.LineWidth = 2
+$set2.LineColor = [ScottPlot.Colors]::Black
+$set2.LinePattern = [ScottPlot.LinePattern]::DenselyDashed
+
 $plot.Show()

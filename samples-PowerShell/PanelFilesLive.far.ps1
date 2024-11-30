@@ -1,35 +1,35 @@
 ﻿param($N = 10)
 
 Start-FarTask -Data N {
+	$N = $Data.N
 	Add-Type -Path $env:FARHOME\FarNet\Lib\FarNet.ScottPlot\FarNet.ScottPlot.dll
 
-	$N = $Data.N
-	$values = [double[]]::new($N)
-	$labels = [string[]]::new($N)
-
-	$plot = [FarNet.ScottPlot.FormPlot]::new("$N lagest panel files")
-	$set1 = $plot.AddBar($values, $null)
-	$plot.XTicks($labels)
-	$plot.XAxis.TickLabelStyle($null, $null, $null, $null, 60)
+	$plot = [ScottPlot.FarPlot]::new("$N lagest panel files")
+	$style = [ScottPlot.LabelStyle]::new()
+	$style.Rotation = -60
+	$style.Alignment = 'MiddleRight'
+	$plot.Axes.Bottom.TickLabelStyle = $style
+	$plot.Axes.Bottom.MinimumSize = 150
 	$plot.YLabel('Length')
 
 	while(!$plot.IsCancellationRequested) {
 		$files = job {
-			$Far.Panel.Files | Sort-Object Length -Descending
+			$Far.Panel.Files | Sort-Object Length -Descending | Select-Object -First $Data.N
 		}
-		for($i = $N; --$i -ge 0) {
-			if ($i -lt $files.Count) {
-				$_ = $files[$i]
-				$values[$i] = $_.Length
-				$labels[$i] = $_.Name.Substring(0, [Math]::Min($_.Name.Length, 25))
-			}
-			else {
-				$values[$i] = 0
-				$labels[$i] = ''
-			}
+		$values = [double[]]::new($N)
+		$labels = [string[]]::new($N)
+		$$ = -1
+		foreach($_ in $files) {
+			++$$
+			$values[$$] = $_.Length
+			$labels[$$] = $_.Name.Substring(0, [Math]::Min($_.Name.Length, 25))
 		}
 
-		$plot.SetAxisLimitsY(0, ($values | Measure-Object -Maximum).Maximum * 1.05)
+		$plot.Clear()
+		$set1 = $plot.Add.Bars($values)
+		$plot.Axes.Bottom.SetTicks((0 .. ($N - 1)), $labels)
+		$plot.Axes.SetLimitsY(0, ($values | Measure-Object -Maximum).Maximum * 1.05)
+
 		$plot.Show(3000)
 	}
 }

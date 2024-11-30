@@ -1,28 +1,29 @@
 ﻿open FarNet
-open FarNet.ScottPlot
+open ScottPlot
 
 task {
     let N = 10
-    let values = Array.zeroCreate N
-    let labels = Array.zeroCreate N
 
-    let plot = FormPlot($"{N} lagest panel files")
-    let set1 = plot.AddBar(values)
-    plot.XTicks(labels)
-    plot.XAxis.TickLabelStyle(rotation=60f)
+    let plot = new FarPlot $"{N} lagest panel files"
     plot.YLabel("Length")
+    plot.Axes.Bottom.MinimumSize <- 150f
+    plot.Axes.Bottom.TickLabelStyle <- LabelStyle(Rotation = -60f, Alignment = Alignment.MiddleRight)
 
     while not plot.IsCancellationRequested do
         let! files = job {
-            return far.Panel.GetFiles() |> Array.sortByDescending (fun x -> x.Length)
+            return far.Panel.GetFiles() |> Array.sortByDescending (fun x -> x.Length) |> Array.truncate N
         }
-        Array.fill values 0 N 0.
-        Array.fill labels 0 N ""
-        for i in 0 .. (min N files.Length) - 1 do
+        let values = Array.zeroCreate N
+        let labels = Array.zeroCreate N
+        for i in 0 .. files.Length - 1 do
             let file = files[i]
             values[i] <- float file.Length
             labels[i] <- file.Name.Substring(0, min file.Name.Length 25)
 
-        plot.SetAxisLimitsY(0, (values |> Array.max) * 1.05)
+        plot.Clear()
+        let set1 = plot.Add.Bars(values)
+        plot.Axes.Bottom.SetTicks(Generate.Consecutive(N), labels)
+        plot.Axes.SetLimitsY(0, (values |> Array.max) * 1.05)
+
         do! plot.ShowAsync(3000)
 }

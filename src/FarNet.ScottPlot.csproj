@@ -5,10 +5,11 @@
     <UseWindowsForms>true</UseWindowsForms>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>NU1701</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ScottPlot" Version="4.1.74" />
-    <PackageReference Include="ScottPlot.WinForms" Version="4.1.74" />
+    <PackageReference Include="ScottPlot" Version="5.0.47" />
+    <PackageReference Include="ScottPlot.WinForms" Version="5.0.47" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="ib publish -Configuration $(Configuration) -FarHome $(FarHome)" />

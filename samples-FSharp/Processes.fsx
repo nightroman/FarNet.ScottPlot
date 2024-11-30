@@ -1,5 +1,5 @@
-﻿open FarNet.ScottPlot
-open System.Diagnostics
+﻿open System.Diagnostics
+open ScottPlot
 
 let N = 20
 let values, labels =
@@ -9,9 +9,12 @@ let values, labels =
     |> Array.map (fun x -> float (x.WorkingSet64 / 1048576L), x.ProcessName.Substring(0, min 25 x.ProcessName.Length))
     |> Array.unzip
 
-let plot = FormPlot("Processes")
-let set1 = plot.AddBar(values)
-plot.XTicks(labels)
-plot.XAxis.TickLabelStyle(rotation=60f)
+let plot = new FarPlot "Processes"
 plot.YLabel("WorkingSet64")
+plot.Axes.Bottom.MinimumSize <- 150f
+plot.Axes.Bottom.TickLabelStyle <- LabelStyle(Rotation = -60f, Alignment = Alignment.MiddleRight)
+
+let set1 = plot.Add.Bars(values)
+plot.Axes.Bottom.SetTicks(Generate.Consecutive(N), labels)
+
 plot.Show()

@@ -1,6 +1,13 @@
 # FarNet.ScottPlot Release Notes
 <https://github.com/ScottPlot/ScottPlot/releases>
 
+## v3.0.0
+
+ScottPlot 5 with many breaking changes and improvements.
+
+- See <https://scottplot.net/faq/version-5.0>
+- See updated samples
+
 ## v2.0.4
 
 - ScottPlot 4.1.74
