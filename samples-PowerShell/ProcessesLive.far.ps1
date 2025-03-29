@@ -1,7 +1,8 @@
 ﻿param($N = 20)
 
-Start-FarTask -Data N {
-	Add-Type -Path $env:FARHOME\FarNet\Lib\FarNet.ScottPlot\FarNet.ScottPlot.dll
+Start-FarTask -N $N {
+	param($N)
+	Import-Module "$env:FARHOME\FarNet\Lib\FarNet.ScottPlot"
 
 	$plot = [ScottPlot.FarPlot]::new('Processes')
 	$plot.YLabel('WorkingSet64')
@@ -12,7 +13,6 @@ Start-FarTask -Data N {
 	$plot.Axes.Bottom.TickLabelStyle = $style
 	$plot.Axes.Bottom.MinimumSize = 150
 
-	$N = $Data.N
 	while(!$plot.IsCancellationRequested) {
 		$processes = @(Get-Process | Sort-Object WorkingSet64 -Descending | Select-Object -First $N)
 

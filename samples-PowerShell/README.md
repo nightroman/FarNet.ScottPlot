@@ -18,6 +18,8 @@ ps: .\Scatter.far.ps1
 
 ## Run by pwsh
 
+Scripts not using `Start-FarTask` may be invoked by pwsh directly, assuming `$env:FARHOME` is set.
+
 ```
 pwsh Scatter.far.ps1 -Wait
 ```

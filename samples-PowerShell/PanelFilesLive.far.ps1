@@ -1,8 +1,8 @@
 ﻿param($N = 10)
 
-Start-FarTask -Data N {
-	$N = $Data.N
-	Add-Type -Path $env:FARHOME\FarNet\Lib\FarNet.ScottPlot\FarNet.ScottPlot.dll
+Start-FarTask -N $N {
+	param($N)
+	Import-Module "$env:FARHOME\FarNet\Lib\FarNet.ScottPlot"
 
 	$plot = [ScottPlot.FarPlot]::new("$N lagest panel files")
 	$style = [ScottPlot.LabelStyle]::new()

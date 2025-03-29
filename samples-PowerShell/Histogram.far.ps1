@@ -1,7 +1,7 @@
 ﻿param($N = 20)
 
 $ErrorActionPreference = 1
-Add-Type -Path "$env:FARHOME\FarNet\Lib\FarNet.ScottPlot\FarNet.ScottPlot.dll"
+Import-Module "$env:FARHOME\FarNet\Lib\FarNet.ScottPlot"
 
 $plot = [ScottPlot.FarPlot]::new('Process memory')
 $plot.XLabel('Memory')
