@@ -20,19 +20,19 @@ task build meta, {
 
 task publish {
 	Set-Location src
+
 	exec { dotnet publish -c $Configuration -o $ModuleRoot --no-build }
 
-	remove "$ModuleRoot\$ModuleName.*.json"
-	Copy-Item "$ModuleName.ini" $ModuleRoot
+	Copy-Item -Destination $ModuleRoot @(
+		'Content\*'
+		"$ModuleRoot\runtimes\win-x64\native\*"
+	)
 
-	Copy-Item $ModuleRoot\runtimes\win-x64\native\libSkiaSharp.dll $ModuleRoot
+	remove "$ModuleRoot\$ModuleName.*.json", "$ModuleRoot\runtimes"
 
 	$xml = [xml](Get-Content "$ModuleName.csproj")
 	$node = $xml.SelectSingleNode('Project/ItemGroup/PackageReference[@Include="ScottPlot"]')
 	Copy-Item "$HOME\.nuget\packages\ScottPlot\$($node.Version)\lib\net8.0\ScottPlot.xml" $ModuleRoot
-
-	Set-Location "$ModuleRoot\runtimes"
-	remove linux-*, osx, win-arm64
 }
 
 task clean {
@@ -78,24 +78,31 @@ task meta -Inputs 1.build.ps1, Release-Notes.md -Outputs src\Directory.Build.pro
 
 task package markdown, {
 	remove z
-	$toModule = mkdir "z\tools\FarHome\FarNet\Lib\$ModuleName"
+	$Script:ToModule = mkdir "z\tools\FarHome\FarNet\Lib\$ModuleName"
 
-	exec { robocopy $ModuleRoot $toModule /s /xf *.pdb } (0..2)
+	exec { robocopy $ModuleRoot $ToModule /s /xf *.pdb } (0..2)
 
 	Copy-Item -Destination z @(
 		'README.md'
 	)
 
-	Copy-Item -Destination $toModule @(
+	Copy-Item -Destination $ToModule @(
 		"README.htm"
 		"LICENSE"
 	)
 
-	Assert-SameFile.ps1 -Result (Get-ChildItem $toModule -Recurse -File -Name) -Text -View $env:MERGE -Sample @'
+	$text = [System.IO.File]::ReadAllText("$ToModule\$ModuleName.psd1")
+	[System.IO.File]::WriteAllText("$ToModule\$ModuleName.psd1", $text.Replace('0.0.0', $Version))
+
+	Assert-SameFile.ps1 -Result (Get-ChildItem $ToModule -Recurse -File -Name) -Text -View $env:MERGE -Sample @'
+about_FarNet.ScottPlot.help.txt
 FarNet.ScottPlot.dll
 FarNet.ScottPlot.ini
+FarNet.ScottPlot.psd1
+FarNet.ScottPlot.psm1
 FarNet.ScottPlot.xml
 HarfBuzzSharp.dll
+libHarfBuzzSharp.dll
 libSkiaSharp.dll
 LICENSE
 OpenTK.dll
@@ -108,10 +115,6 @@ SkiaSharp.dll
 SkiaSharp.HarfBuzz.dll
 SkiaSharp.Views.Desktop.Common.dll
 SkiaSharp.Views.WindowsForms.dll
-runtimes\win-x64\native\libHarfBuzzSharp.dll
-runtimes\win-x64\native\libSkiaSharp.dll
-runtimes\win-x86\native\libHarfBuzzSharp.dll
-runtimes\win-x86\native\libSkiaSharp.dll
 '@
 }
 
@@ -138,6 +141,21 @@ task nuget package, version, {
 "@
 
 	exec { NuGet.exe pack z\Package.nuspec }
+}
+
+task pushNuGet nuget, {
+	$NuGetApiKey = Read-Host NuGetApiKey
+	exec { nuget push "$ModuleName.$Version.nupkg" -Source nuget.org -ApiKey $NuGetApiKey }
+}
+
+task pushPSGallery package, {
+	$NuGetApiKey = Read-Host NuGetApiKey
+	Publish-Module -Path $ToModule -NuGetApiKey $NuGetApiKey
+}
+
+task release pushNuGet, pushPSGallery, clean -If {
+	Assert-GitBranchClean.ps1
+	$true
 }
 
 task test {

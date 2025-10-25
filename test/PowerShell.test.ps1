@@ -1,6 +1,10 @@
 ﻿
 . ./About.ps1
 
+task Signal {
+	Start-Far @Testing "ps: ..\samples-PowerShell\Signal.far.ps1"
+}
+
 task Scatter {
 	Start-Far @Testing "ps: ..\samples-PowerShell\Scatter.far.ps1"
 }

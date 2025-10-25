@@ -4,21 +4,45 @@
 
 # FarNet.ScottPlot
 
-FarNet friendly [ScottPlot] extension for .NET modules and scripts in PowerShell, F#, JavaScript.
+> [ScottPlot] PowerShell module and FarNet library
 
-## Package
-
-The package is designed for [FarNet](https://github.com/nightroman/FarNet/wiki).
-To install FarNet and FarNet.ScottPlot, follow [these steps](https://github.com/nightroman/FarNet#readme).
-
-The NuGet package [FarNet.ScottPlot](https://www.nuget.org/packages/FarNet.ScottPlot)
-is installed to `%FARHOME%\FarNet\Lib\FarNet.ScottPlot`.
+Packages:
+- PowerShell 7.4 module, PSGallery [FarNet.ScottPlot](https://www.powershellgallery.com/packages/FarNet.ScottPlot)
+- FarNet library, NuGet [FarNet.ScottPlot](https://www.nuget.org/packages/FarNet.ScottPlot)
 
 ## Samples
 
 - [FSharp](https://github.com/nightroman/FarNet.ScottPlot/tree/main/samples-FSharp)
 - [JavaScript](https://github.com/nightroman/FarNet.ScottPlot/tree/main/samples-JavaScript)
 - [PowerShell](https://github.com/nightroman/FarNet.ScottPlot/tree/main/samples-PowerShell)
+
+## PowerShell module
+
+Install from PSGallery:
+
+```powershell
+Install-Module -Name FarNet.ScottPlot
+```
+
+Explore, see also [about_FarNet.ScottPlot.help.txt](https://github.com/nightroman/FarNet.ScottPlot/blob/main/src/Content/about_FarNet.ScottPlot.help.txt):
+
+```powershell
+# import and get module commands
+Import-Module -Name FarNet.ScottPlot
+Get-Command -Module FarNet.ScottPlot
+
+# get module and commands help
+help about_FarNet.ScottPlot
+help Show-FarPlotHistogram
+help Show-FarPlotScatter
+help Show-FarPlotSignal
+...
+```
+
+## FarNet library
+
+To install as the FarNet library `FarNet.ScottPlot`, follow [these steps](https://github.com/nightroman/FarNet#readme).\
+See [PowerShell FarNet modules](https://github.com/nightroman/FarNet/wiki/PowerShell-FarNet-modules) for details.
 
 ## How to use
 

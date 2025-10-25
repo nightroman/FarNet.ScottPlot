@@ -3,7 +3,7 @@ param(
 	[switch]$Wait
 )
 
-$ErrorActionPreference = 1
+$ErrorActionPreference=1
 Import-Module "$env:FARHOME\FarNet\Lib\FarNet.ScottPlot"
 
 [double[]]$xs = 1, 2, 3, 4, 5

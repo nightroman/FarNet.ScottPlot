@@ -1,9 +1,5 @@
 ﻿using ScottPlot.WinForms;
-using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ScottPlot;
 
@@ -13,21 +9,21 @@ namespace ScottPlot;
 public class FarPlot : Plot
 {
     readonly CancellationTokenSource _tokenSource = new();
-    private string _formTitle;
-    FormsPlot _plot;
-    Form _form;
-    System.Windows.Forms.Timer _timer;
+    private string? _formTitle;
+    FormsPlot? _plot;
+    Form? _form;
+    System.Windows.Forms.Timer? _timer;
 
     /// <summary>
     /// Gets or sets the form title.
     /// </summary>
-    public string FormTitle
+    public string? FormTitle
     {
         get => _formTitle;
         set
         {
             _formTitle = value;
-            if (_form is {})
+            if (_form is { })
                 _form.Text = _formTitle;
         }
     }
@@ -42,15 +38,11 @@ public class FarPlot : Plot
     /// </summary>
     public int FormHeight { get; set; } = 600;
 
-    /// <summary>
     ///
-    /// </summary>
     public int FormInterval { get; set; }
 
-    /// <summary>
     ///
-    /// </summary>
-    public Action FormUpdate { get; set; }
+    public Action? FormUpdate { get; set; }
 
     /// <summary>
     /// Gets the cancellation token for live plot tasks.
@@ -66,10 +58,10 @@ public class FarPlot : Plot
     /// Creates a new plot for showing in a form.
     /// </summary>
     /// <param name="formTitle">Specifies the form window title.</param>
-    public FarPlot(string formTitle = null)
+    public FarPlot(string? formTitle = null)
     {
         CancellationToken = _tokenSource.Token;
-        FormTitle = formTitle;
+        FormTitle = string.IsNullOrEmpty(formTitle) ? DateTime.Now.ToString("HH:mm:ss") : formTitle;
     }
 
     /// <summary>
@@ -123,7 +115,7 @@ public class FarPlot : Plot
             {
                 // Use `Invoke()` to avoid 'Cross-thread operation not valid: Control 'pictureBox1' accessed from a thread other than the thread it was created on.'
                 //_form.Invoke(() => _plot.Show()); //rk-0
-                _form.Invoke(_plot.Refresh); //rk-0
+                _form!.Invoke(_plot.Refresh); //rk-0
             }
             catch (InvalidOperationException ex)
             {
@@ -134,13 +126,13 @@ public class FarPlot : Plot
         }
     }
 
-    void Update(object sender, EventArgs e)
+    void Update(object? sender, EventArgs e)
     {
-        _timer.Stop();
+        _timer!.Stop();
         try
         {
-            FormUpdate();
-            _plot.Refresh();
+            FormUpdate?.Invoke();
+            _plot!.Refresh();
         }
         finally
         {

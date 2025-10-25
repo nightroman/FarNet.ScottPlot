@@ -2,6 +2,7 @@
 
 Recommended order:
 
+- [Signal.fsx](Signal.fsx)
 - [Scatter.fsx](Scatter.fsx)
 - [Processes.fsx](Processes.fsx)
 - [ProcessesLive.fsx](ProcessesLive.fsx)

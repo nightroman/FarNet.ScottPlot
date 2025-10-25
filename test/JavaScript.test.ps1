@@ -1,6 +1,10 @@
 ﻿
 . ./About.ps1
 
+task Signal {
+	Start-Far @Testing "js: @ ..\samples-JavaScript\Signal.js"
+}
+
 task Scatter {
 	Start-Far @Testing "js: @ ..\samples-JavaScript\Scatter.js"
 }

@@ -1,6 +1,6 @@
 ﻿param($N = 20)
 
-$ErrorActionPreference = 1
+$ErrorActionPreference=1
 Import-Module "$env:FARHOME\FarNet\Lib\FarNet.ScottPlot"
 
 $processes = @(Get-Process | Sort-Object WorkingSet64 -Descending | Select-Object -First $N)

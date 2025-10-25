@@ -2,6 +2,7 @@
 
 Recommended order:
 
+- [Signal.js](Signal.js)
 - [Scatter.js](Scatter.js)
 - [Processes.js](Processes.js)
 - [ProcessesLive.js](ProcessesLive.js)

@@ -1,0 +1,17 @@
+﻿TOPIC
+    about_FarNet.ScottPlot
+
+SHORT DESCRIPTION
+    ScottPlot plots in PowerShell.
+
+LONG DESCRIPTION
+    The module provides commands for showing ScottPlot plots.
+
+MODULE COMMANDS
+
+    Show-FarPlotHistogram
+    Show-FarPlotScatter
+    Show-FarPlotSignal
+
+SEE ALSO
+    ScottPlot https://github.com/ScottPlot/ScottPlot

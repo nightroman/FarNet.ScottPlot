@@ -1,6 +1,18 @@
 # FarNet.ScottPlot Release Notes
 <https://github.com/ScottPlot/ScottPlot/releases>
 
+## v3.1.0
+
+Published as PowerShell module
+- `Show-FarPlotHistogram`
+- `Show-FarPlotScatter`
+- `Show-FarPlotSignal`
+
+New class `ScottPlot.FarShow`
+- `Histogram()`
+- `Scatter()`
+- `Signal()`
+
 ## v3.0.6
 
 ScottPlot 5.1.57
